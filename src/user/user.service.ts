@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 const db = require('../../models');
 
 import { User } from '../../models/user.js';
+import { CreateUserDto } from './dto/create-user.dto.js';
+import { UpdateUserDto } from 'src/auth/auth.dto.js';
+
 
 @Injectable()
 export class UsersService {
-  async createUser(data: any) {
+  async createUser(CreateUserDto) {
     try {
-      const user = await db.User.create(data);
+      const user = await db.User.create(CreateUserDto);
       return user;
     } catch (error) {
       throw new Error(`failed to create user ${error.message}`);
@@ -52,7 +55,7 @@ export class UsersService {
   async deleteUserById(id: number): Promise<string> {
     try {
       const user = await this.getUserById(id);
-      if (user != 'user not found') {
+      if (user !== null) {
         await db.User.destroy({ where: { id: id } });
         return `User with ID ${id} deleted successfully.`;
       } else {
